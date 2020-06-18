@@ -41,10 +41,10 @@ export async function download(
                 response.data.pipe(stream);
                 stream.on("finish", resolve);
             });
+        } catch (e) {
+            this.logger.info(`Downloading ${url} failed`);
+            this.logger.debug(e);
         }
-    } catch (e) {
-        this.logger.info(`Downloading ${url} failed`);
-        this.logger.debug(e);
     }
 }
 
