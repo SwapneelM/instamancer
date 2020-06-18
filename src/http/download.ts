@@ -20,26 +20,28 @@ export async function download(
     name: string,
     extension: string,
 ) {
-    await new Promise((resolve) => {
-        fs.mkdir(this.directory, {recursive: true}, resolve);
-    });
-    try {
-        // Get data
-        const response = await axios({
-            method: "get",
-            responseType: "stream",
-            url,
+    if (extension == "mp4") {
+        await new Promise((resolve) => {
+            fs.mkdir(this.directory, {recursive: true}, resolve);
         });
+        try {
+            // Get data
+            const response = await axios({
+                method: "get",
+                responseType: "stream",
+                url,
+            });
 
-        // Write to file
-        await new Promise(async (resolve) => {
-            const stream = fs.createWriteStream(
-                this.directory + "/" + name + "." + extension,
-            );
-            // noinspection TypeScriptValidateJSTypes
-            response.data.pipe(stream);
-            stream.on("finish", resolve);
-        });
+            // Write to file
+            await new Promise(async (resolve) => {
+                const stream = fs.createWriteStream(
+                    this.directory + "/" + name + "." + extension,
+                );
+                // noinspection TypeScriptValidateJSTypes
+                response.data.pipe(stream);
+                stream.on("finish", resolve);
+            });
+        }
     } catch (e) {
         this.logger.info(`Downloading ${url} failed`);
         this.logger.debug(e);
